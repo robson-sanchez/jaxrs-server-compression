@@ -1,5 +1,7 @@
 package br.com.rvvsanchez.libs.api.rest.server.jaxrs.interceptor;
 
+import static br.com.rvvsanchez.libs.api.rest.server.jaxrs.interceptor.CompressConstants.GZIP_ENCODING;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -21,8 +23,6 @@ import javax.ws.rs.ext.WriterInterceptorContext;
  */
 @Provider
 public class CompressWriterInterceptor implements WriterInterceptor {
-
-  private static final String GZIP_ENCODING = "gzip";
 
   /**
    * HTTP headers

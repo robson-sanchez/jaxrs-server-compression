@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import br.com.rvvsanchez.libs.api.rest.server.jaxrs.filter.PrettyFormatFilter;
+import br.com.rvvsanchez.libs.api.rest.server.jaxrs.interceptor.CompressReaderInterceptor;
 import br.com.rvvsanchez.libs.api.rest.server.jaxrs.interceptor.CompressWriterInterceptor;
 
 /**
@@ -42,13 +43,15 @@ public class CompressionDynamicBindingTest {
     resourceClass = MockResource.class;
     doReturn(resourceClass).when(resourceInfo).getResourceClass();
   }
-  
+
   @Test
   public void testDisableCompression() throws NoSuchMethodException, SecurityException {
     Method resourceMethod = resourceClass.getMethod("disableCompression");
     doReturn(resourceMethod).when(resourceInfo).getResourceMethod();
-    
+
     dynamicBinding.configure(resourceInfo, context);
+
+    verify(context, never()).register(CompressReaderInterceptor.class);
     verify(context, never()).register(CompressWriterInterceptor.class);
     verify(context, never()).register(PrettyFormatFilter.class);
   }
@@ -57,8 +60,10 @@ public class CompressionDynamicBindingTest {
   public void testResourceMethodCompress() throws NoSuchMethodException, SecurityException {
     Method resourceMethod = resourceClass.getMethod("compress");
     doReturn(resourceMethod).when(resourceInfo).getResourceMethod();
-    
+
     dynamicBinding.configure(resourceInfo, context);
+
+    verify(context, times(1)).register(CompressReaderInterceptor.class);
     verify(context, times(1)).register(CompressWriterInterceptor.class);
     verify(context, times(1)).register(PrettyFormatFilter.class);
   }
@@ -67,9 +72,10 @@ public class CompressionDynamicBindingTest {
   public void testResourceClassCompress() throws NoSuchMethodException, SecurityException {
     Method resourceMethod = resourceClass.getMethod("useDefault");
     doReturn(resourceMethod).when(resourceInfo).getResourceMethod();
-    
+
     dynamicBinding.configure(resourceInfo, context);
 
+    verify(context, times(1)).register(CompressReaderInterceptor.class);
     verify(context, times(1)).register(CompressWriterInterceptor.class);
     verify(context, times(1)).register(PrettyFormatFilter.class);
   }
@@ -79,9 +85,10 @@ public class CompressionDynamicBindingTest {
     Method resourceMethod = resourceClass.getMethod("useDefault");
     doReturn(resourceMethod).when(resourceInfo).getResourceMethod();
     doReturn(null).when(resourceInfo).getResourceClass();
-    
+
     dynamicBinding.configure(resourceInfo, context);
 
+    verify(context, never()).register(CompressReaderInterceptor.class);
     verify(context, never()).register(CompressWriterInterceptor.class);
     verify(context, never()).register(PrettyFormatFilter.class);
   }

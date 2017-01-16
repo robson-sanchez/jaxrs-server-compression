@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import br.com.rvvsanchez.libs.api.rest.server.jaxrs.annotation.Compress;
 import br.com.rvvsanchez.libs.api.rest.server.jaxrs.annotation.DisableCompression;
 import br.com.rvvsanchez.libs.api.rest.server.jaxrs.filter.PrettyFormatFilter;
+import br.com.rvvsanchez.libs.api.rest.server.jaxrs.interceptor.CompressReaderInterceptor;
 import br.com.rvvsanchez.libs.api.rest.server.jaxrs.interceptor.CompressWriterInterceptor;
 
 /**
@@ -49,6 +50,7 @@ public class CompressionDynamicBinding implements DynamicFeature {
     if ((hasAnnotation(resourceMethod, Compress.class))
         || (hasAnnotation(resourceClass, Compress.class))) {
       context.register(CompressWriterInterceptor.class);
+      context.register(CompressReaderInterceptor.class);
       context.register(PrettyFormatFilter.class);
     }
   }
